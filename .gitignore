@@ -3,5 +3,8 @@ gen/**
 
 # ignore any remnants copied during generation of static site
 **/uploads/.*manifest
+**/uploads/staatic/**
+**/uploads/wp-migrate-db/**
+**/uploads/wpo/**
 *.php
 .htaccess
