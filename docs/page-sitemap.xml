@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="https://washington-birds.hoza.us/sitemap-stylesheet-for-inner-sitemap.xsl?template=inner-sitemap"?>
-<!--sitemap-generator-url="https://wpgrim.com" sitemap-generator-version="2.2.3"-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://washington-birds.hoza.us/</loc>
-    <lastmod>2025-12-19T23:28:50+00:00</lastmod>
+    <lastmod>2026-01-12T04:58:17+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
