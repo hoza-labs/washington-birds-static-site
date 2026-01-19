@@ -1,6 +1,6 @@
 # Birds of Washington and Beyond
 
-This project presents a [website] that preserves a static copy of a website that was powered by WordPress software running on a hosting service platform (no longer available).
+A website about bird-watching in Washington State. This project presents a [website] that preserves a static copy of a website that was powered by WordPress software running on a hosting service platform (no longer available).
 
 [website]: https://washington-birds.hoza.us
 
