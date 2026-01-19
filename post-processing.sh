@@ -7,24 +7,54 @@
 set -ue
 DOCS_DIR="docs"
 
-echo "Starting post-processing of generated files in '${DOCS_DIR}'..."
+main() {
+    echo "Starting post-processing of generated files in '${DOCS_DIR}'..."
 
-wp_domain="$(cat docs/*.xsl | grep -oP '(https?://[^/]+)/.*sitemap.xml' | cut -d/ -f1-3 | head -n 1)"
-echo "- looking for references to '${wp_domain}'"
+    replace-untransformed-domain-references
+    remove-powered-by-staatic-lines
 
-xsl_pattern='(https?://[^/]+)/.*\.xsl'
-static_domain="$(
-    cat docs/sitemap.xml \
-    | grep -oP 'xml-stylesheet.*?'"${xsl_pattern}" \
-    | grep -oP "${xsl_pattern}" \
-    | cut -d/ -f1-3 \
-    | head -n 1
-)"
-echo "- replacing with references to '${static_domain}'"
+    echo "Post-processing completed."
+}
 
-# replace occurrences of the wordpress domain with the static domain in all text files
-# we filter to *.xsl because that's all we expect to need; we could safely remove it to check all text files
-# "exec grep" finds only text files; "exec sed" edits the files in place without any backup
-find "${DOCS_DIR}" -type f -iname "*.xsl" -exec grep -Iq . {} \; -exec sed -i 's|'"${wp_domain}"'|'"${static_domain}"'|g' {} +
+replace-untransformed-domain-references() {
+    echo "Looking for old wordpress domain references..."
+    local wp_domain
+    wp_domain="$(cat docs/*.xsl | grep -oP '(https?://[^/]+)/.*sitemap.xml' | cut -d/ -f1-3 | head -n 1)"
+    echo "- looking for references to '${wp_domain}'"
 
-echo "Post-processing completed."
+    local xsl_pattern
+    xsl_pattern='(https?://[^/]+)/.*\.xsl'
+    local static_domain
+    static_domain="$(
+        cat docs/sitemap.xml \
+        | grep -oP 'xml-stylesheet.*?'"${xsl_pattern}" \
+        | grep -oP "${xsl_pattern}" \
+        | cut -d/ -f1-3 \
+        | head -n 1
+    )"
+    echo "- replacing with references to '${static_domain}'"
+
+    # replace occurrences of the wordpress domain with the static domain in all text files
+    # we filter to *.xsl because that's all we expect to need; we could safely remove it to check all text files
+    # "exec grep" finds only text files; "exec sed" edits the files in place without any backup
+    find "${DOCS_DIR}" -type f -iname "*.xsl" -exec grep -Iq . {} \; -exec sed -i 's|'"${wp_domain}"'|'"${static_domain}"'|g' {} +
+
+    echo "...done"
+}
+
+remove-powered-by-staatic-lines() {
+    echo "removing 'powered by staatic' lines (be patient!)..."
+
+    # we use two single-quoted strings so that we don't match and remove it ourselves!
+    local target='<!-- Powered by Sta''atic (https://staatic.com/) -->'
+
+    # replace occurrences of $target with empty string in all text files
+    # "exec grep" finds only text files; "exec sed" edits the files in place without any backup
+    find "${DOCS_DIR}" -type f \
+        -exec grep -Iq . {} \; \
+        -exec sed -i 's|'"${target}"'||g' {} +
+
+    echo "...done"
+}
+
+main
